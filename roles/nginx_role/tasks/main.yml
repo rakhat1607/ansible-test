@@ -1,17 +1,10 @@
 ---
 # tasks/main.yml
-- name: Set correct permissions for Nginx configuration
-  file:
-    path: /etc/nginx/nginx.conf
-    mode: '0644'
-    owner: root
-    group: root
-  become: yes
-
 - name: Install Nginx
   apt:
     name: nginx
     state: present
+  become_user: ubuntu
   become: yes
 
 - name: Copy Nginx configuration

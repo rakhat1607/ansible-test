@@ -5,17 +5,17 @@
     state: present
   become: yes
 
-- name: Ensure Nginx service is running and enabled
-  service_facts:
+- name: Ensure Nginx service is running
+  command: systemctl is-active nginx
+  register: nginx_status
+  failed_when: nginx_status.stdout != 'active'
   become: yes
-  register: service_facts
 
-- name: Assert Nginx service is running and enabled
-  assert:
-    that:
-      - "'nginx' in service_facts.services"
-      - "service_facts.services['nginx'].state == 'running'"
-      - "service_facts.services['nginx'].enabled == true"
+- name: Ensure Nginx service is enabled
+  command: systemctl is-enabled nginx
+  register: nginx_enabled
+  failed_when: nginx_enabled.stdout != 'enabled'
+  become: yes
 
 - name: Check if Nginx is listening on the correct port
   command: ss -tnlp | grep ':{{ nginx_port }}'

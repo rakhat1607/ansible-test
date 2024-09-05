@@ -1,0 +1,31 @@
+---
+- name: Ensure Nginx is installed
+  apt:
+    name: nginx
+    state: present
+  become: yes
+
+- name: Ensure Nginx service is running and enabled
+  service_facts:
+  become: yes
+  register: service_facts
+
+- name: Assert Nginx service is running and enabled
+  assert:
+    that:
+      - "'nginx' in service_facts.services"
+      - "service_facts.services['nginx'].state == 'running'"
+      - "service_facts.services['nginx'].enabled == true"
+
+- name: Check if Nginx is listening on the correct port
+  command: ss -tnlp | grep ':{{ nginx_port }}'
+  register: nginx_port_check
+  failed_when: nginx_port_check.rc != 0
+  become: yes
+
+- name: Verify Nginx is serving content on the port
+  uri:
+    url: "http://localhost:{{ nginx_port }}"
+    status_code: 200
+  register: nginx_test
+  failed_when: nginx_test.status != 200

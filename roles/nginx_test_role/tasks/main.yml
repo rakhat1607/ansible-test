@@ -11,14 +11,14 @@
   register: service_facts
 
 - name: Check if Nginx is listening on the correct port
-  command: ss -tnlp | grep ':{{ nginx_port }}'
+  command: ss -tnlp | grep ':80'
   register: nginx_port_check
   failed_when: nginx_port_check.rc != 0
   become: yes
 
 - name: Verify Nginx is serving content on the port
   uri:
-    url: "http://localhost:{{ nginx_port }}"
+    url: "http://localhost:80"
     status_code: 200
   register: nginx_test
   failed_when: nginx_test.status != 200

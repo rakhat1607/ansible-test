@@ -1,1 +1,9 @@
 dependencies: []
+# ---
+# galaxy_info:
+#   author: ubuntu
+#   description: A role for installing and configuring Nginx
+#   license: license (e.g., MIT)
+#   min_ansible_version: 2.9
+#   role_name: nginx_role
+#   namespace: roles

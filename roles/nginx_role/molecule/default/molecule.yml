@@ -1,0 +1,15 @@
+---
+dependency:
+  name: galaxy
+  # requirements_file: requirements.txt
+driver:
+  name: docker
+platforms:
+  - name: instance
+    image: ubuntu:20.04
+provisioner:
+  name: ansible
+  playbooks:
+    converge: /Users/rakhat/Desktop/work onetech/ansible-test/roles/nginx_role/molecule/default/converge.yml
+# verifier:
+#   name: testinfra

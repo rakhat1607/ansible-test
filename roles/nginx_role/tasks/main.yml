@@ -1,10 +1,14 @@
 ---
 # tasks/main.yml
+- name: Update APT package index
+  apt:
+    update_cache: yes
+  become: yes
+
 - name: Install Nginx
   apt:
     name: nginx
     state: present
-  become_user: ubuntu
   become: yes
 
 - name: Copy Nginx configuration
@@ -13,6 +17,8 @@
     dest: /etc/nginx/nginx.conf
   notify: Restart Nginx
   become: yes
+  vars:
+    nginx_port: 80
 
 - name: Ensure Nginx is running
   service:

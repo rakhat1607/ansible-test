@@ -5,17 +5,10 @@
     state: present
   become: yes
 
-- name: Ensure Nginx service is running
-  command: systemctl is-active nginx
-  register: nginx_status
-  failed_when: nginx_status.stdout != 'active'
+- name: Ensure Nginx service is running and enabled
+  service_facts:
   become: yes
-
-- name: Ensure Nginx service is enabled
-  command: systemctl is-enabled nginx
-  register: nginx_enabled
-  failed_when: nginx_enabled.stdout != 'enabled'
-  become: yes
+  register: service_facts
 
 - name: Check if Nginx is listening on the correct port
   command: ss -tnlp | grep ':{{ nginx_port }}'

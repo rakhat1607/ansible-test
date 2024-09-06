@@ -1,0 +1,14 @@
+---
+- name: Configure KRaft cluster
+  # remote_user: ec2-user
+  # hosts: kafka  
+  become: yes
+  tasks:
+    - include_tasks: tasks/kafka_user.yml
+    - include_tasks: tasks/install_java.yml
+    - include_tasks: tasks/install_kafka.yml
+    - include_tasks: tasks/create_directories.yml
+    - include_tasks: tasks/send_configs.yml
+    - include_tasks: tasks/format_kafka_storage.yml
+    - include_tasks: tasks/send_systemd_units.yml
+    - include_tasks: tasks/install_lag_exporter.yml

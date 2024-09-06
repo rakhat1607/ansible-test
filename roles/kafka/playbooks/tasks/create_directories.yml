@@ -1,0 +1,12 @@
+- name: "Create directories for kafka"
+  file:
+    path: '{{ item.path }}'
+    state: directory
+    owner: kafka
+    group: kafka
+    mode: '{{ item.mode }}'
+  loop:
+    - { path: '/var/lib/kafka', mode: '0744' }
+    - { path: '/var/lib/kafka/data', mode: '0744' }
+    - { path: '/var/log/kafka', mode: '0755' }
+    - { path: '/etc/kafka/', mode: '0755' }

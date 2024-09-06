@@ -1,0 +1,84 @@
+############################# Log Basics #############################
+
+# A comma separated list of directories under which to store log files
+log.dirs=/var/lib/kafka/data
+
+# The default number of log partitions per topic. More partitions allow greater
+# parallelism for consumption, but this will also result in more files across
+# the brokers.
+num.partitions={{ num_partition }}
+
+
+############################# Server Basics #############################
+
+# The role of this server. Setting this puts us in KRaft mode
+process.roles={{ hostvars[inventory_hostname]['process_roles']|join(",") }}
+
+# The node id associated with this instance's roles
+node.id={{ groups.kafka.index(inventory_hostname) }}
+
+# The connect string for the controller quorum
+controller.quorum.voters={%- for host in groups.kafka -%}
+                           {%- set id = groups.kafka.index(host) -%}
+                           {%- set host = hostvars[host].ansible_host -%}
+                           {%- set port = 9093 -%}
+                           {%- set end = "" if loop.last else "," -%}
+                           {{ id }}@{{ host }}:{{ port }}{{ end }}
+                         {%- endfor %}
+
+
+
+############################# Socket Server Settings #############################
+
+# The address the socket server listens on.
+listeners=BROKER://{{ ansible_host }}:9092,CONTROLLER://{{ ansible_host }}:9093
+
+# Name of listener used for communication between brokers.
+inter.broker.listener.name=BROKER
+
+# Listener name, hostname and port the broker will advertise to clients.
+advertised.listeners=BROKER://{{ ansible_host }}:9092
+
+# A comma-separated list of the names of the listeners used by the controller.
+controller.listener.names=CONTROLLER
+
+# Maps listener names to security protocols, the default is for them to be the same.
+listener.security.protocol.map=CONTROLLER:SASL_PLAINTEXT,BROKER:SASL_PLAINTEXT
+
+
+############################# Authentication Settings #############################
+sasl.enabled.mechanisms=PLAIN
+sasl.mechanism.inter.broker.protocol=PLAIN
+sasl.mechanism.controller.protocol=PLAIN
+
+
+############################# Authorization Settings #############################
+authorizer.class.name=org.apache.kafka.metadata.authorizer.StandardAuthorizer
+allow.everyone.if.no.acl.found=true
+super.users=User:admin
+
+
+############################# Other Settings #############################
+group.initial.rebalance.delay.ms=0
+log.retention.check.interval.ms=30000
+log.retention.hours={{ log_retention_hours }}
+log.roll.hours=1
+log.segment.bytes=1073741824
+num.io.threads=16
+num.network.threads=8
+num.recovery.threads.per.data.dir=2
+offsets.topic.replication.factor={{ topic_replication_factor }}
+socket.receive.buffer.bytes=1024000
+socket.request.max.bytes=104857600
+socket.send.buffer.bytes=1024000
+transaction.state.log.min.isr={{ min_isr_insync}}
+transaction.state.log.replication.factor={{ topic_replication_factor }}
+zookeeper.connection.timeout.ms=10000
+delete.topic.enable=True
+replica.fetch.max.bytes=5242880
+max.message.bytes=5242880
+message.max.bytes=5242880
+default.replication.factor={{ topic_replication_factor }}
+min.insync.replicas={{ min_isr_insync}}
+replica.fetch.wait.max.ms=200
+replica.lag.time.max.ms=1000

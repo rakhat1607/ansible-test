@@ -1,0 +1,10 @@
+[Unit] 
+Description=kafka lag exporter
+After=network.target
+[Service] 
+Type=simple 
+User=kafka 
+Group=kafka 
+ExecStart=/opt/kafka-lag-exporter/bin/kafka-lag-exporter -Dconfig.file=/opt/kafka-lag-exporter/conf/kafka-lag-exporter.conf -Dlogback.configurationFile==/opt/kafka-lag-exporter/conf/logback.xml
+[Install] 
+WantedBy=multi-user.target

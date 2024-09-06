@@ -1,0 +1,8 @@
+---
+- name: Copy server rpm file to server
+  copy:
+     src: files/jdk-17_linux-x64_bin.rpm
+     dest: /tmp/jdk-17_linux-x64_bin.rpm
+ 
+- name: Install java
+  shell: rpm --replacepkgs -i /tmp/jdk-17_linux-x64_bin.rpm

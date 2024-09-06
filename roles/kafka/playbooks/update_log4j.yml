@@ -1,0 +1,7 @@
+---
+- name: 'Preparing host for kafka installation'
+  remote_user: ec2-user
+  hosts: kafka
+  become: yes
+  tasks:
+    - include_tasks: tasks/update_log4j.yml

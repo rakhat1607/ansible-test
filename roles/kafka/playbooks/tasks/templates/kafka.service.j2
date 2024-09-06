@@ -1,0 +1,21 @@
+[Unit] 
+Description=Apache Kafka 
+
+[Service] 
+Type=simple 
+User=kafka 
+Group=kafka 
+ExecStart=/opt/kafka/bin/kafka-server-start.sh /etc/kafka/server.properties
+ExecStop=/opt/kafka/bin/kafka-server-stop.sh 
+Environment="KAFKA_LOG4J_OPTS=-Dlog4j.configuration=file:/etc/kafka/log4j.properties"
+Environment="KAFKA_HEAP_OPTS=-Xms4G -Xmx4G"
+Environment="KAFKA_HEAP_OPTS=-Xms{{ min_heap_size }} -Xmx{{ max_heap_size }}"
+Environment="KAFKA_OPTS=\
+    -javaagent:/opt/kafka/libs/jmx_prometheus_javaagent-{{ jmx_exporter_version }}.jar=7071:/etc/kafka/kafka-jmx.yml \
+    -Djava.security.auth.login.config=/etc/kafka/kafka_server_jaas.conf"
+LimitAS=infinity
+LimitRSS=infinity
+LimitCORE=infinity
+LimitNOFILE=infinity
+[Install] 
+WantedBy=multi-user.target

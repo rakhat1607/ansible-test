@@ -1,0 +1,7 @@
+---
+- name: 'Send configs'
+  remote_user: ec2-user
+  hosts: kafka
+  become: yes
+  tasks:
+    - include_tasks: tasks/send_configs.yml

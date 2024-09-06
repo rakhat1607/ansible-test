@@ -1,0 +1,22 @@
+---
+- name: 'Preparing host for kafka installation'
+  remote_user: ec2-user
+  hosts: kafka
+  become: yes
+  tasks:
+    - name: 'Disable selinux'
+      selinux: 
+        state: disabled
+    - name: 'Check if firewalld is installed'
+      stat:
+        path: /usr/lib/systemd/system/firewalld.service
+      register: firewalld_installed
+
+    - name: 'Disable firewalld if installed'
+      systemd:
+        name: firewalld
+        state: stopped
+        enabled: no
+      when: firewalld_installed.stat.exists
+    #- include_tasks: tasks/kafka_user.yml
+    #- include_tasks: tasks/install_java.yml

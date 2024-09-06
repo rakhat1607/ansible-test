@@ -1,0 +1,23 @@
+---
+- name: 'Remove old kafka directory'
+  file:
+    state: absent
+    path: /opt/kafka
+
+- name: 'Send kafka archive'
+  unarchive:
+    src: 'files/kafka_{{ kafka_version }}.tgz'
+    dest: /opt/
+    owner: kafka
+    group: kafka
+
+- name: 'Rename kafka directory'
+  command: 'mv /opt/kafka_{{ kafka_version }} /opt/kafka'
+
+- name: 'Send jmx exproter'
+  copy:
+    src: 'files/jmx_prometheus_javaagent-{{ jmx_exporter_version }}.jar'
+    dest: '/opt/kafka/libs/jmx_prometheus_javaagent-{{ jmx_exporter_version }}.jar'
+    owner: kafka
+    group: kafka
+    mode: 0644

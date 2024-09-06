@@ -1,0 +1,33 @@
+---
+- name: 'Copy kafka configs'
+  template:
+    src: 'templates/{{ item }}.j2'
+    dest: '/etc/kafka/{{ item }}'
+    owner: kafka
+    group: kafka
+    mode: 0644
+    backup: yes    
+  loop:
+    - server.properties
+    - log4j.properties
+
+- name: 'Copy jmx configs'
+  template:
+    src: 'templates/kafka-jmx.yml.j2'
+    dest: '/etc/kafka/kafka-jmx.yml'
+    owner: kafka
+    group: kafka
+    mode: 0644
+    backup: yes 
+
+- name: 'Copy kafka auth configs'
+  template:
+    src: 'templates/{{ item }}.j2'
+    dest: '/etc/kafka/{{ item }}'
+    owner: kafka
+    group: kafka
+    mode: 0644
+    backup: yes 
+  loop:
+    - admin.properties
+    - kafka_server_jaas.conf

@@ -1,0 +1,50 @@
+---
+- name: Install Java and Kafka on Ubuntu
+  hosts: all
+  become: yes
+  vars:
+    kafka_version: "3.5.1"  # Укажите нужную версию Kafka
+    jmx_exporter_version: "0.17.2"  # Укажите нужную версию JMX Exporter
+    kafka_download_url: "https://downloads.apache.org/kafka/{{ kafka_version }}/kafka_2.13-{{ kafka_version }}.tgz"
+    jmx_exporter_download_url: "https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/{{ jmx_exporter_version }}/jmx_prometheus_javaagent-{{ jmx_exporter_version }}.jar"
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Remove old kafka directory
+      file:
+        state: absent
+        path: /opt/kafka
+
+    - name: Download Kafka archive
+      get_url:
+        url: "{{ kafka_download_url }}"
+        dest: "/tmp/kafka_{{ kafka_version }}.tgz"
+
+    - name: Unarchive Kafka archive
+      unarchive:
+        src: "/tmp/kafka_{{ kafka_version }}.tgz"
+        dest: /opt/
+        owner: kafka
+        group: kafka
+        remote_src: yes
+
+    - name: Rename Kafka directory
+      command: mv /opt/kafka_2.13-{{ kafka_version }} /opt/kafka
+      args:
+        creates: /opt/kafka  # Избегает повторного выполнения, если каталог уже переименован
+
+    - name: Download JMX Exporter
+      get_url:
+        url: "{{ jmx_exporter_download_url }}"
+        dest: "/opt/kafka/libs/jmx_prometheus_javaagent-{{ jmx_exporter_version }}.jar"
+        owner: kafka
+        group: kafka
+        mode: '0644'
+
+    - name: Ensure kafka user exists
+      user:
+        name: kafka
+        state: present

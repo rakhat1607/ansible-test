@@ -1,0 +1,20 @@
+---
+kafka:
+  hosts:
+    kafka-dev-outpost01-auth:
+      ansible_host: 172.26.1.150
+      process_roles:
+        - broker
+        - controller
+  vars:
+    kafka_version: '2.13-3.6.1'
+    jmx_exporter_version: '0.17.2'
+    min_heap_size: 1G
+    max_heap_size: 2G
+    cluster_id: PIlXRNtPRlS4AtQgy-Lzfg
+    cluster_name: kafka-dev-mib3-auth-cluster
+    kafka_lag_exporter_version": '0.8.2'
+    num_partition: '5'
+    log_retention_hours: '24'
+    topic_replication_factor: '1'
+    min_isr_insync: '1'

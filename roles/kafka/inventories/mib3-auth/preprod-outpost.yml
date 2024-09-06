@@ -1,0 +1,29 @@
+---
+kafka:
+  hosts:
+    kafka-preprod-outpost01-auth:
+      ansible_host: 172.26.1.170
+      process_roles:
+        - broker
+        - controller
+    kafka-preprod-outpost02-auth:
+      ansible_host: 172.26.1.171
+      process_roles:
+        - broker
+        - controller
+    kafka-preprod-outpost03-auth:
+      ansible_host: 172.26.1.172
+      process_roles:
+        - broker
+        - controller
+  vars:
+    kafka_version: '2.13-3.6.1'
+    jmx_exporter_version: '0.17.2'
+    min_heap_size: 1G
+    max_heap_size: 2G
+    kafka_lag_exporter_version: 0.8.2
+    cluster_id: mXMb-Ah9Q8uNFoMtqGrBag
+    cluster_name: kafka-preprod-mib3-auth-cluster
+    log_retention_hours: '24'
+    topic_replication_factor: '3'
+    min_isr_insync: '2'

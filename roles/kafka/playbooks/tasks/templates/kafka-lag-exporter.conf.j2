@@ -1,0 +1,24 @@
+kafka-lag-exporter {
+  reporters {
+    prometheus {
+      port = 7072
+    }
+  }
+  clusters = [
+    {
+      name = "{{ cluster_name }}" 
+      bootstrap-brokers = "{% for host in groups['kafka'] %}{{ hostvars[host]['ansible_host'] }}:9092{% if not loop.last %},{% endif %}{% endfor %}"
+      topic-whitelist = [".*"]
+      admin-client-properties = {
+        security.protocol="SASL_PLAINTEXT"
+        sasl.mechanism="PLAIN"
+        sasl.jaas.config="org.apache.kafka.common.security.plain.PlainLoginModule required username=\"admin\" password=\"adminpass\";"
+      }
+      consumer-properties = {
+        security.protocol="SASL_PLAINTEXT"
+        sasl.mechanism="PLAIN"
+        sasl.jaas.config="org.apache.kafka.common.security.plain.PlainLoginModule required username=\"admin\" password=\"adminpass\";"
+      }
+    }
+  ]
+}
